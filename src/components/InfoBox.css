@@ -1,0 +1,28 @@
+/* .infoBox{
+    text-align: center;
+} */
+
+.infobox {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .cardcontainter {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  .cardcontainter:hover {
+    transform: scale(1.02);
+  }
+  
+  .MuiCardContent-root {
+    background-color: #fafafa;
+    border-radius: 0 0 12px 12px;
+  }
+  
+  .MuiTypography-body2 p {
+    margin: 0.3rem 0;
+  }

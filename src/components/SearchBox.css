@@ -1,0 +1,31 @@
+/* .SearchBox {
+  text-align: center;
+}
+
+.cardcontainter {
+  display: flex;
+  justify-content: center;
+} */
+
+.SearchBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+  
+  .SearchBox form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .SearchBox p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  
