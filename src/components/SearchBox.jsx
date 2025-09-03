@@ -6,6 +6,7 @@ import { weatherCodeMap } from "./weatherCodeMap";
 
 const SearchBox = ({ updateInfo }) => {
   const [city, setCity] = useState("");
+  const [error, setError] = useState(false);
 
   const cord_API = "https://geocoding-api.open-meteo.com/v1/search";
   const weath_API = "https://api.open-meteo.com/v1/forecast";
@@ -14,12 +15,12 @@ const SearchBox = ({ updateInfo }) => {
     try {
       // Get coordinates
       let geoResponse = await fetch(`${cord_API}?name=${city}&count=1`);
-      let geoData = await geoResponse.json();
 
-      if (!geoData.results || geoData.results.length === 0) {
-        console.log("City not found");
-        return;
+      if (!geoResponse.ok) {
+        throw new Error("City not found");
       }
+
+      let geoData = await geoResponse.json();
 
       const { latitude, longitude, name } = geoData.results[0];
 
@@ -27,6 +28,10 @@ const SearchBox = ({ updateInfo }) => {
       let weatherResponse = await fetch(
         `${weath_API}?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&hourly=apparent_temperature,relativehumidity_2m&timezone=auto`
       );
+
+      if (!weatherResponse.ok) {
+        throw new Error("City not found");
+      }
 
       let weatherData = await weatherResponse.json();
 
@@ -43,9 +48,8 @@ const SearchBox = ({ updateInfo }) => {
           weatherCodeMap[weatherData.current_weather.weathercode] || "Unknown", // Open-Meteo gives a numeric code - so converting code into weather strings
       };
       return result;
-      
-    } catch (error) {
-      console.error("Error fetching weather:", error);
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -55,10 +59,16 @@ const SearchBox = ({ updateInfo }) => {
 
   let handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(city);
-    setCity("");
-    let newInfo = await getWeatherInfo();
-    updateInfo(newInfo);
+    try {
+      console.log(city);
+      setCity("");
+      const newInfo = await getWeatherInfo();
+      updateInfo(newInfo);
+      setError(false); // reset error if success
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    }
   };
   return (
     <div className="SearchBox">
@@ -76,6 +86,7 @@ const SearchBox = ({ updateInfo }) => {
         <Button variant="contained" type="submit">
           Search
         </Button>
+        {error && <p style={{ color: "red" }}>No such place exists.</p>}
       </form>
     </div>
   );
